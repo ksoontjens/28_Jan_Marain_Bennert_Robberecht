@@ -1,0 +1,161 @@
+package hellotvxlet;
+
+import javax.tv.xlet.*;
+import org.havi.ui.*;
+import org.dvb.ui.*;
+import java.awt.event.*;
+import org.havi.ui.event.*;
+
+
+public class HelloTVXlet implements Xlet, HActionListener {
+    private XletContext actueleXletContext;
+    private HScene scene;
+    private boolean debug = true;
+    
+    private HStaticText tekstLabel,tekstLabelJuist,tekstLabelFout;
+    private HTextButton knop1,knop2,knop3,knop4, knop5;
+    
+    
+    public void actionPerformed(ActionEvent e){
+     //System.out.println(e.getActionCommand());
+     if(e.getActionCommand() == "Keuze 5"){
+         knop4.requestFocus();
+         knop1.setVisible(false);
+         knop3.setVisible(false);
+         knop5.setVisible(false);
+         
+         scene.validate();
+     }else{
+         if(e.getActionCommand()=="Keuze 2"){
+            System.out.println("Keuze is juist!");
+            tekstLabelFout.setVisible(false);
+            tekstLabelJuist.setVisible(true);
+            
+            scene.validate();
+        }else{
+            System.out.println("Keuze is fout!");   
+            tekstLabelFout.setVisible(true);
+            
+            scene.validate();
+        }
+     }
+    }
+    
+    public HelloTVXlet() {
+      
+    }
+
+    public void initXlet(XletContext context) throws XletStateChangeException {
+      if(debug) System.out.println("Xlet Initialiseren");
+      this.actueleXletContext = context;
+      
+      
+      HSceneTemplate sceneTemplate = new HSceneTemplate();
+      
+      sceneTemplate.setPreference(org.havi.ui.HSceneTemplate.SCENE_SCREEN_DIMENSION, 
+              new HScreenDimension(1.0f, 1.0f), org.havi.ui.HSceneTemplate.REQUIRED);
+      
+      sceneTemplate.setPreference(org.havi.ui.HSceneTemplate.SCENE_SCREEN_LOCATION, 
+              new HScreenPoint(0.0f, 0.0f), org.havi.ui.HSceneTemplate.REQUIRED);
+    
+      scene = HSceneFactory.getInstance().getBestScene(sceneTemplate);
+      
+      tekstLabel = new HStaticText("Wie wordt multimiljonair?");
+      
+      tekstLabel.setLocation(150,-50);
+      tekstLabel.setSize(400,250);
+      //tekstLabel.setBackground(new DVBColor(255,255,255,179));
+      tekstLabel.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      
+      tekstLabelJuist = new HStaticText("Uw keuze is juist!");
+      
+      tekstLabelJuist.setLocation(150,350);
+      tekstLabelJuist.setSize(400,250);
+      //tekstLabel.setBackground(new DVBColor(255,255,255,179));
+      tekstLabelJuist.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      tekstLabelJuist.setVisible((false));
+      
+      tekstLabelFout = new HStaticText("Uw keuze is fout!");
+      
+      tekstLabelFout.setLocation(150,350);
+      tekstLabelFout.setSize(400,250);
+      //tekstLabel.setBackground(new DVBColor(255,255,255,179));
+      tekstLabelFout.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      tekstLabelFout.setVisible((false));
+      
+      scene.add(tekstLabel);
+      scene.add(tekstLabelJuist);
+      scene.add(tekstLabelFout);
+      
+      knop1 = new HTextButton("Keuze 1");
+      knop1.setLocation(150, 100);
+      knop1.setSize(100, 50);
+      knop1.setBackground(new DVBColor(0,0,0,179));
+      knop1.setBackgroundMode(HVisible.BACKGROUND_FILL);
+            
+      knop2 = new HTextButton("Keuze 2");
+      knop2.setLocation(150, 200);
+      knop2.setSize(100, 50);
+      knop2.setBackground(new DVBColor(0,0,0,179));
+      knop2.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      
+      knop3 = new HTextButton("Keuze 3");
+      knop3.setLocation(450, 100);
+      knop3.setSize(100, 50);
+      knop3.setBackground(new DVBColor(0,0,0,179));
+      knop3.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      
+      knop4 = new HTextButton("Keuze 4");
+      knop4.setLocation(450, 200);
+      knop4.setSize(100, 50);
+      knop4.setBackground(new DVBColor(0,0,0,179));
+      knop4.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      
+      knop5 = new HTextButton("Hulplijn aanvragen");
+      knop5.setLocation(70, 275);
+      knop5.setSize(250, 50);
+      knop5.setBackground(new DVBColor(0,0,0,179));
+      knop5.setBackgroundMode(HVisible.BACKGROUND_FILL);
+      
+      knop1.setFocusTraversal(null, knop2, null, knop3);
+      knop2.setFocusTraversal(knop1, knop5, null, knop4);
+      knop3.setFocusTraversal(null, knop4, knop1, null);
+      knop4.setFocusTraversal(knop3, null, knop2, null);
+      knop5.setFocusTraversal(knop2, null, null, null);
+      
+      scene.add(knop1);
+      scene.add(knop2);
+      scene.add(knop3);
+      scene.add(knop4);
+      scene.add(knop5);
+      
+      knop1.requestFocus();
+      
+      knop1.setActionCommand("Keuze 1");
+      knop2.setActionCommand("Keuze 2");
+      knop3.setActionCommand("Keuze 3");
+      knop4.setActionCommand("Keuze 4");
+      knop5.setActionCommand("Keuze 5");
+      
+      knop1.addHActionListener(this);
+      knop2.addHActionListener(this);
+      knop3.addHActionListener(this);
+      knop4.addHActionListener(this);
+      knop5.addHActionListener(this);
+    }
+
+    public void startXlet() {
+        if(debug) System.out.println("Xlet Starten");
+        scene.validate(); 
+        scene.setVisible(true);
+        
+    }
+
+    public void pauseXlet() {
+     
+    }
+
+    public void destroyXlet(boolean unconditional) {
+     
+    }
+}
